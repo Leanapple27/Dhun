@@ -36,37 +36,46 @@ export default function PlaylistImportModal({ isOpen, onClose }: PlaylistImportM
     setError("");
 
     try {
-      // Extract playlist ID from URL or raw ID
+      // Extract playlist ID from URL, browse path, or raw ID
       let listId = urlInput.trim();
-      const match = urlInput.match(/[?&]list=([^#&?]+)/);
-      if (match) {
-        listId = match[1];
+      const listMatch = urlInput.match(/[?&]list=([^#&?]+)/);
+      const browseMatch = urlInput.match(/\/browse\/(VL[a-zA-Z0-9_-]+)/);
+      if (listMatch) {
+        listId = listMatch[1];
+      } else if (browseMatch) {
+        listId = browseMatch[1];
       }
 
-      // Query multi-pipe backend album/playlist endpoint
+      // Query multi-pipe backend playlist / album endpoint
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
-      const res = await fetch(`${API_URL}/music/album/${encodeURIComponent(listId)}`);
+      let res = await fetch(`${API_URL}/music/playlist/${encodeURIComponent(listId)}`);
+      if (!res.ok) {
+        res = await fetch(`${API_URL}/music/album/${encodeURIComponent(listId)}`);
+      }
       const data = await res.json();
 
       let tracks: any[] = [];
       let name = playlistName.trim() || data?.data?.name || "Imported YouTube Playlist";
-      let cover = data?.data?.thumbnailUrl || "";
+      let cover = data?.data?.thumbnailUrl || data?.data?.thumbnail || "";
 
       if (data?.success && Array.isArray(data.data?.relatedStreams)) {
-        tracks = data.data.relatedStreams.map((item: any) => ({
-          id: (item.url ? item.url.replace("/watch?v=", "") : item.id) || item.videoId,
-          title: item.title || "Untitled",
-          artist: item.uploaderName || item.artist || "Unknown Artist",
-          thumbnail: item.thumbnail || cover,
-          duration: item.duration || 0
-        }));
+        tracks = data.data.relatedStreams.map((item: any) => {
+          const id = item.id || (item.url ? item.url.replace("/watch?v=", "") : "") || item.videoId;
+          return {
+            id,
+            title: item.title || "Untitled",
+            artist: item.artist || item.uploaderName || "Unknown Artist",
+            thumbnail: item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : cover),
+            duration: item.duration || 0
+          };
+        }).filter((t: any) => Boolean(t.id));
       }
 
-      // If backend playlist query had no related streams, fallback to searching the title or query
+      // If backend playlist query had no related streams, fallback to searching
       if (tracks.length === 0) {
         const searchRes = await searchMusic(urlInput.replace(/https?:\/\/[^\s]+/g, "") || "Trending Hits", "music_songs");
         if (Array.isArray(searchRes?.data) && searchRes.data.length > 0) {
-          tracks = searchRes.data.slice(0, 15);
+          tracks = searchRes.data.slice(0, 20);
         }
       }
 

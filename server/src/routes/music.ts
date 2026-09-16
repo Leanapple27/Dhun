@@ -91,14 +91,41 @@ router.get('/artist/:id', async (req, res, next) => {
   }
 });
 
+import { fetchYouTubePlaylist } from '../services/youtubeService';
+
 router.get('/album/:id', async (req, res, next) => {
   try {
-    const instanceUrl = multiPipeRouter.getHealthyInstance();
-    const playlist = await pipedService.getPlaylist(instanceUrl, req.params.id);
-    res.json({ success: true, data: playlist });
+    const playlistId = req.params.id;
+    try {
+      const data = await fetchYouTubePlaylist(playlistId);
+      return res.json({ success: true, data });
+    } catch (innerErr) {
+      console.warn(`[music/album] Innertube error, trying Piped fallback:`, innerErr);
+      const instanceUrl = multiPipeRouter.getHealthyInstance();
+      const playlist = await pipedService.getPlaylist(instanceUrl, playlistId);
+      return res.json({ success: true, data: playlist });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/playlist/:id', async (req, res, next) => {
+  try {
+    const playlistId = req.params.id;
+    try {
+      const data = await fetchYouTubePlaylist(playlistId);
+      return res.json({ success: true, data });
+    } catch (innerErr) {
+      console.warn(`[music/playlist] Innertube error, trying Piped fallback:`, innerErr);
+      const instanceUrl = multiPipeRouter.getHealthyInstance();
+      const playlist = await pipedService.getPlaylist(instanceUrl, playlistId);
+      return res.json({ success: true, data: playlist });
+    }
   } catch (error) {
     next(error);
   }
 });
 
 export default router;
+
