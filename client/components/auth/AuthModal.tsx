@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Music2, Mail, Lock, User as UserIcon, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { cn } from "../../lib/utils";
@@ -55,9 +55,44 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
     }
   };
 
+  // Load Google Identity Services script
+  useEffect(() => {
+    if (typeof window !== "undefined" && !document.getElementById("google-gsi-client")) {
+      const script = document.createElement("script");
+      script.id = "google-gsi-client";
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   const handleGoogle = async () => {
     setError("");
     setLoading(true);
+
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const hasRealId = clientId && !clientId.includes("your-google-client-id");
+
+    if (hasRealId && typeof window !== "undefined" && (window as any).google?.accounts?.id) {
+      try {
+        (window as any).google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async (response: any) => {
+            if (response?.credential) {
+              await googleLogin(response.credential);
+              onClose();
+            }
+          },
+        });
+        (window as any).google.accounts.id.prompt();
+        setLoading(false);
+        return;
+      } catch (e) {
+        console.warn("Google GIS prompt fallback:", e);
+      }
+    }
+
     try {
       await googleLogin();
       onClose();

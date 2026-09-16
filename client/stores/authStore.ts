@@ -105,15 +105,43 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   googleLogin: async (credential) => {
     set({ isLoading: true });
+
+    let googleId = credential || "google_" + Date.now();
+    let email = "google.listener@dhun.app";
+    let username = "Google Listener";
+    let avatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
+
+    // If a real Google JWT ID token was passed, decode it
+    if (credential && credential.includes(".")) {
+      try {
+        const base64Url = credential.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
+        const payload = JSON.parse(jsonPayload);
+        if (payload?.sub) googleId = payload.sub;
+        if (payload?.email) email = payload.email;
+        if (payload?.name) username = payload.name;
+        else if (payload?.given_name) username = payload.given_name;
+        if (payload?.picture) avatar = payload.picture;
+      } catch (e) {
+        console.warn("Could not parse Google ID token payload:", e);
+      }
+    }
+
     try {
       const res = await fetch(`${API_BASE}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          googleId: credential || "google_" + Date.now(),
-          email: "google.listener@dhun.app",
-          username: "Google Listener",
-          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+          googleId,
+          email,
+          username,
+          avatar,
         }),
       });
 
@@ -132,10 +160,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     const fallbackUser: User = {
-      id: "usr_google_guest",
-      email: "listener@gmail.com",
-      username: "Google Listener",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      id: googleId,
+      email,
+      username,
+      avatar,
     };
     if (typeof window !== "undefined") {
       localStorage.setItem("dhun_token", "token_google_valid");
