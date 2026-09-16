@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  password         String?
+  googleId         String?           @unique
+  googleEmail      String?
+  googleAvatar     String?
+  playlists        Playlist[]
+  likedTracks      LikedTrack[]
+  listeningHistory ListeningHistory[]
+  speedDial        SpeedDial[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Playlist {
+  id        String          @id @default(uuid())
+  name      String
+  userId    String
+  user      User            @relation(fields: [userId], references: [id])
+  tracks    PlaylistTrack[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model PlaylistTrack {
+  id         String   @id @default(uuid())
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  videoId    String
+  title      String
+  artist     String
+  thumbnail  String
+  duration   Int
+  position   Int
+  addedAt    DateTime @default(now())
+}
+
+model LikedTrack {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  videoId   String
+  title     String
+  artist    String
+  thumbnail String
+  duration  Int
+  likedAt   DateTime @default(now())
+}
+
+model ListeningHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  videoId   String
+  title     String
+  artist    String
+  thumbnail String
+  duration  Int
+  playedAt  DateTime @default(now())
+}
+
+model SpeedDial {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  slot      Int
+  videoId   String?
+  type      String   // 'track' | 'playlist' | 'album'
+  targetId  String
+  title     String
+  thumbnail String
+}
+
+model CachedTrack {
+  videoId   String   @id
+  title     String
+  artist    String
+  thumbnail String
+  duration  Int
+  streamUrl String
+  expiresAt DateTime
+}
+
+model PipedInstance {
+  url       String   @id
+  region    String
+  priority  Int
+  active    Boolean  @default(true)
+  latency   Int?
+  lastCheck DateTime @default(now())
+}
