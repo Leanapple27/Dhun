@@ -8,11 +8,13 @@ import ProgressBar from "../player/ProgressBar";
 import VolumeSlider from "../player/VolumeSlider";
 import NowPlaying from "../player/NowPlaying";
 import LyricsModal from "../player/LyricsModal";
-import { ListMusic, Mic2 } from "lucide-react";
+import NowPlayingWindow from "../player/NowPlayingWindow";
+import { ListMusic, Mic2, Maximize2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 export default function BottomPlayer() {
   const currentTrack = usePlayerStore((state) => state.currentTrack);
+  const openNowPlayingWindow = usePlayerStore((state) => state.openNowPlayingWindow);
   const { isQueueOpen, toggleQueue } = useQueueStore();
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
 
@@ -69,12 +71,23 @@ export default function BottomPlayer() {
         >
           <ListMusic className="w-5 h-5" />
         </button>
+
+        <button
+          onClick={openNowPlayingWindow}
+          aria-label="Expand Now Playing Window"
+          className="text-zinc-400 hover:text-white transition-colors cursor-pointer"
+          title="Expand View"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </button>
+
         <div className="w-24">
           <VolumeSlider />
         </div>
       </div>
 
       <LyricsModal isOpen={isLyricsOpen} onClose={() => setIsLyricsOpen(false)} />
+      <NowPlayingWindow />
     </div>
   );
 }

@@ -136,7 +136,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
                   <div className="w-20 h-20 rounded-xl overflow-hidden shadow-lg mb-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={topTrack.thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150"}
+                      src={topTrack.thumbnail || (topTrack.id ? `https://i.ytimg.com/vi/${topTrack.id}/hqdefault.jpg` : "")}
                       alt={topTrack.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
@@ -193,7 +193,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
                   id: album.id || String(idx),
                   title: album.title || album.name || "Album",
                   artist: album.artist || album.uploaderName || "Various Artists",
-                  thumbnail: album.thumbnail || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
+                  thumbnail: album.thumbnail || (album.id ? `https://i.ytimg.com/vi/${album.id}/hqdefault.jpg` : "")
                 }}
               />
             ))}
@@ -215,7 +215,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
                 artist={{
                   id: artist.id || String(idx),
                   name: artist.name || artist.title || "Artist",
-                  thumbnail: artist.thumbnail || "https://images.unsplash.com/photo-1493225457124-a1a2a5f5646a?w=300"
+                  thumbnail: artist.thumbnail || (artist.id ? `https://i.ytimg.com/vi/${artist.id}/hqdefault.jpg` : "")
                 }}
               />
             ))}

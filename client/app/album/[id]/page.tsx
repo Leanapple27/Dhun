@@ -17,7 +17,7 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
 
   const [albumTitle, setAlbumTitle] = useState(albumTitleParam);
   const [artist, setArtist] = useState(artistParam);
-  const [cover, setCover] = useState("https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400");
+  const [cover, setCover] = useState("");
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -82,8 +82,14 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
       <div className="bg-gradient-to-b from-primary/30 via-surface to-background px-6 md:px-10 pt-10 pb-8 border-b border-white/5">
         <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
           <div className="w-44 h-44 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex-shrink-0 bg-surface">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={cover} alt={albumTitle} className="w-full h-full object-cover" />
+            {cover ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={cover} alt={albumTitle} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-[#242424] text-zinc-600">
+                <Disc3 className="w-16 h-16 animate-spin-slow" />
+              </div>
+            )}
           </div>
 
           <div className="space-y-3 text-center md:text-left">

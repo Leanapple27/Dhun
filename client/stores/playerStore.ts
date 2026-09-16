@@ -42,6 +42,13 @@ interface PlayerState {
   setCurrentTime: (time: number) => void;
   setDuration: (dur: number) => void;
   setQueueIndex: (index: number) => void;
+
+  isNowPlayingWindowOpen: boolean;
+  toggleNowPlayingWindow: () => void;
+  openNowPlayingWindow: () => void;
+  closeNowPlayingWindow: () => void;
+  autoPlaySimilar: boolean;
+  toggleAutoPlaySimilar: () => void;
 }
 
 export const usePlayerStore = create<PlayerState>()(
@@ -205,6 +212,13 @@ export const usePlayerStore = create<PlayerState>()(
       setCurrentTime: (time: number) => set({ currentTime: time }),
       setDuration: (dur: number) => set({ duration: dur }),
       setQueueIndex: (index: number) => set({ queueIndex: index }),
+
+      isNowPlayingWindowOpen: false,
+      autoPlaySimilar: true,
+      openNowPlayingWindow: () => set({ isNowPlayingWindowOpen: true }),
+      closeNowPlayingWindow: () => set({ isNowPlayingWindowOpen: false }),
+      toggleNowPlayingWindow: () => set((s) => ({ isNowPlayingWindowOpen: !s.isNowPlayingWindowOpen })),
+      toggleAutoPlaySimilar: () => set((s) => ({ autoPlaySimilar: !s.autoPlaySimilar })),
     }),
     {
       name: 'dhun-player-storage',

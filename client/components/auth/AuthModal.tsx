@@ -19,7 +19,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, register, googleLogin, demoLogin } = useAuthStore();
+  const { login, register, googleLogin } = useAuthStore();
 
   if (!isOpen) return null;
 
@@ -37,19 +37,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
       onClose();
     } catch (err: any) {
       setError(err?.message || "Authentication failed. Please check your details.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDemo = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      await demoLogin();
-      onClose();
-    } catch (err: any) {
-      setError(err?.message || "Failed to sign in as demo user");
     } finally {
       setLoading(false);
     }
@@ -141,17 +128,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
             {error}
           </div>
         )}
-
-        {/* Quick 1-Click Demo Sign-in */}
-        <button
-          type="button"
-          onClick={handleDemo}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold py-3 px-4 rounded-xl transition-all text-xs sm:text-sm shadow-lg hover:scale-[1.01] active:scale-[0.99]"
-        >
-          <Sparkles className="w-4 h-4 fill-black" />
-          ⚡ 1-Click Instant Demo Login
-        </button>
 
         {/* Google OAuth Button */}
         <button

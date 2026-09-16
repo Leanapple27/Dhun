@@ -15,7 +15,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const artistNameParam = searchParams.get("name") || decodeURIComponent(resolvedParams.id);
 
   const [artistName, setArtistName] = useState(artistNameParam);
-  const [avatar, setAvatar] = useState("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400");
+  const [avatar, setAvatar] = useState("");
   const [tracks, setTracks] = useState<Track[]>([]);
   const [albums, setAlbums] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,8 +82,14 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       <div className="relative h-64 md:h-80 bg-gradient-to-b from-primary/30 via-surface to-background px-6 md:px-10 flex flex-col justify-end pb-8 border-b border-white/5">
         <div className="flex flex-col md:flex-row md:items-end gap-6 z-10">
           <div className="w-28 h-28 md:w-44 md:h-44 rounded-full overflow-hidden shadow-2xl border-4 border-white/10 flex-shrink-0 bg-surface">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={avatar} alt={artistName} className="w-full h-full object-cover" />
+            {avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatar} alt={artistName} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/40 to-black text-3xl font-black text-white">
+                {artistName.charAt(0) || <Mic2 className="w-10 h-10 text-primary" />}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

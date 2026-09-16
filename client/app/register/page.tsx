@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { register, googleLogin, demoLogin } = useAuthStore();
+  const { register, googleLogin } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,27 +93,6 @@ export default function RegisterPage() {
             {error}
           </div>
         )}
-
-        {/* Quick 1-Click Demo Sign-in */}
-        <button
-          type="button"
-          onClick={async () => {
-            setLoading(true);
-            try {
-              await demoLogin();
-              router.push("/");
-            } catch (err: any) {
-              setError(err?.message || "Failed to sign in as demo user");
-            } finally {
-              setLoading(false);
-            }
-          }}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold py-3 px-4 rounded-xl transition-all text-sm shadow-lg hover:scale-[1.01]"
-        >
-          <Sparkles className="w-4 h-4 fill-black" />
-          ⚡ 1-Click Instant Demo Login
-        </button>
 
         <button
           type="button"
