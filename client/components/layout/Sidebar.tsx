@@ -279,7 +279,7 @@ export default function Sidebar() {
                     <p className={cn("text-xs font-bold truncate", isCurrent ? "text-primary" : "text-white")}>
                       {pl.name}
                     </p>
-                    <p className="text-[11px] text-zinc-400 truncate">
+                    <p suppressHydrationWarning className="text-[11px] text-zinc-400 truncate">
                       {pl.isBlend ? "Blend" : pl.isFolder ? "Folder" : "Playlist"} • {user?.username || "Dhun"}
                     </p>
                   </div>

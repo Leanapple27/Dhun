@@ -193,10 +193,17 @@ export default function Home() {
         if (active) {
           if (Array.isArray(trendRes?.data) && trendRes.data.length > 0) {
             setTrendingRow(trendRes.data.slice(0, 12));
-            // Mix trending with initial picks
+            // Deduplicate and mix trending with initial picks
             setQuickPicks((prev) => {
-              const merged = [...trendRes.data.slice(0, 8), ...prev.slice(8, 16)];
-              return merged;
+              const seen = new Set<string>();
+              const result: Track[] = [];
+              for (const t of [...trendRes.data, ...prev]) {
+                if (t?.id && !seen.has(t.id)) {
+                  seen.add(t.id);
+                  result.push(t);
+                }
+              }
+              return result.slice(0, 16);
             });
           }
 
@@ -322,11 +329,11 @@ export default function Home() {
             className="grid grid-flow-col grid-rows-4 gap-x-6 gap-y-2 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-white/10 scroll-smooth"
             style={{ gridAutoColumns: "minmax(280px, 340px)" }}
           >
-            {quickPicks.map((track) => {
+            {quickPicks.map((track, idx) => {
               const isCurrent = track.id === currentTrack?.id;
               return (
                 <div
-                  key={track.id}
+                  key={`${track.id}-${idx}`}
                   onClick={() => play(track)}
                   className={cn(
                     "flex items-center gap-3.5 p-2 rounded-xl transition-all group cursor-pointer border border-transparent",
