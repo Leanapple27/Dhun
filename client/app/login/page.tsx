@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Music, Mail, Lock, LogIn, Sparkles } from "lucide-react";
@@ -24,6 +24,53 @@ export default function LoginPage() {
       router.push("/");
     } catch (err: any) {
       setError(err?.message || "Failed to log in");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !document.getElementById("google-gsi-client")) {
+      const script = document.createElement("script");
+      script.id = "google-gsi-client";
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  const handleGoogle = async () => {
+    setError("");
+    setLoading(true);
+
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const hasRealId = clientId && !clientId.includes("your-google-client-id");
+
+    if (hasRealId && typeof window !== "undefined" && (window as any).google?.accounts?.id) {
+      try {
+        (window as any).google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async (response: any) => {
+            if (response?.credential) {
+              await googleLogin(response.credential);
+              router.push("/");
+            }
+          },
+        });
+        (window as any).google.accounts.id.prompt();
+        setLoading(false);
+        return;
+      } catch (e) {
+        console.warn("Google GIS prompt fallback:", e);
+      }
+    }
+
+    try {
+      await googleLogin();
+      router.push("/");
+    } catch (err: any) {
+      setError(err?.message || "Failed to sign in with Google");
     } finally {
       setLoading(false);
     }
@@ -70,10 +117,8 @@ export default function LoginPage() {
         {/* Google OAuth Button */}
         <button
           type="button"
-          onClick={async () => {
-            await googleLogin("google-token-xyz");
-            router.push("/");
-          }}
+          onClick={handleGoogle}
+          disabled={loading}
           className="w-full flex items-center justify-center gap-3 bg-white text-zinc-900 font-semibold py-3 px-4 rounded-xl hover:bg-zinc-100 transition-colors text-sm shadow-md"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
