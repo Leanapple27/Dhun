@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Dhun — 20s Product Launch Video</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #030303;
+        color: #ffffff;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        width: 1920px;
+        height: 1080px;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 30%, #151f18 0%, #060907 50%, #020302 100%);
+      }
+
+      /* Ambient glow orbs */
+      .glow-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        pointer-events: none;
+      }
+      .glow-green {
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, rgba(34, 197, 94, 0) 70%);
+        top: -150px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .glow-purple {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0) 70%);
+        bottom: -100px;
+        right: 100px;
+      }
+
+      /* Scene Containers */
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      /* ACT 1: Hook & Logo */
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        padding: 10px 24px;
+        border-radius: 9999px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #4ade80;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+      }
+      .hero-title {
+        font-size: 108px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        text-align: center;
+        background: linear-gradient(180deg, #ffffff 30%, #a1a1aa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero-title span {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero-subtitle {
+        font-size: 32px;
+        color: #a1a1aa;
+        margin-top: 24px;
+        text-align: center;
+        max-width: 900px;
+        font-weight: 500;
+      }
+
+      /* Equalizer Waveform Bars */
+      .eq-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 60px;
+        margin-top: 48px;
+      }
+      .eq-bar {
+        width: 8px;
+        background: linear-gradient(180deg, #4ade80, #15803d);
+        border-radius: 4px;
+      }
+
+      /* ACT 2: Quick Picks Grid */
+      .act-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .act-tag {
+        font-size: 16px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #22c55e;
+        margin-bottom: 8px;
+      }
+      .act-heading {
+        font-size: 56px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      .picks-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 20px;
+        width: 1400px;
+      }
+      .pick-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 14px 20px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .pick-art {
+        width: 72px;
+        height: 72px;
+        border-radius: 12px;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      }
+      .pick-info h4 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .pick-info p {
+        font-size: 14px;
+        color: #a1a1aa;
+        margin-top: 4px;
+      }
+
+      /* ACT 3: YouTube Music Now Playing Window */
+      .now-playing-window {
+        width: 1440px;
+        height: 760px;
+        background: #0d0d0d;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 28px;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.8), 0 0 100px rgba(34, 197, 94, 0.15);
+        display: flex;
+        overflow: hidden;
+        position: relative;
+      }
+      .np-stage {
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        position: relative;
+        background: radial-gradient(circle at center, rgba(34, 197, 94, 0.15) 0%, rgba(0,0,0,0.8) 70%);
+      }
+      .np-pill-switch {
+        display: flex;
+        align-items: center;
+        background: #1f1f1f;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 4px;
+        border-radius: 9999px;
+        margin-bottom: 32px;
+      }
+      .np-pill-btn {
+        padding: 8px 24px;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #888;
+      }
+      .np-pill-btn.active {
+        background: #fff;
+        color: #000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+      .np-cover {
+        width: 380px;
+        height: 380px;
+        border-radius: 20px;
+        object-fit: cover;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(34,197,94,0.3);
+      }
+      .np-sidebar {
+        flex: 0.9;
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        background: #080808;
+        padding: 36px 40px;
+        display: flex;
+        flex-direction: column;
+      }
+      .np-tabs {
+        display: flex;
+        gap: 28px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 16px;
+        margin-bottom: 28px;
+      }
+      .np-tab {
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #71717a;
+      }
+      .np-tab.active {
+        color: #fff;
+        position: relative;
+      }
+      .np-tab.active::after {
+        content: "";
+        position: absolute;
+        bottom: -17px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #22c55e;
+      }
+      .lyrics-line {
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1.6;
+        color: #52525b;
+        transition: color 0.3s;
+      }
+      .lyrics-line.highlight {
+        color: #fff;
+        font-size: 32px;
+        text-shadow: 0 0 20px rgba(255,255,255,0.4);
+      }
+
+      /* ACT 4: Call To Action & Transfer */
+      .transfer-card {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 32px 50px;
+        border-radius: 30px;
+        margin-bottom: 48px;
+      }
+      .service-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 28px;
+      }
+      .yt-logo { background: #ff0000; color: #fff; }
+      .spotify-logo { background: #1ed760; color: #000; }
+      .apple-logo { background: #fc3c44; color: #fff; }
+      .arrow-right {
+        font-size: 32px;
+        color: #22c55e;
+      }
+      .dhun-badge-final {
+        background: linear-gradient(135deg, #22c55e, #15803d);
+        color: #fff;
+        padding: 16px 36px;
+        border-radius: 20px;
+        font-size: 28px;
+        font-weight: 900;
+        box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+      }
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        background: #ffffff;
+        color: #000000;
+        padding: 22px 56px;
+        border-radius: 9999px;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        box-shadow: 0 15px 40px rgba(255,255,255,0.25);
+        margin-top: 24px;
+      }
+      .play-icon {
+        width: 32px;
+        height: 32px;
+        background: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .play-icon svg {
+        fill: #fff;
+        width: 16px;
+        height: 16px;
+        transform: translateX(1px);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="20"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="glow-orb glow-green"></div>
+      <div class="glow-orb glow-purple"></div>
+
+      <!-- ================= SCENE 1: THE HOOK (0s - 4.5s) ================= -->
+      <div id="scene1" class="scene">
+        <div class="brand-badge" id="s1-badge">✨ Next-Gen Web Music Player</div>
+        <h1 class="hero-title" id="s1-title">
+          Meet <span>Dhun</span>.<br />
+          Your Music. Elevated.
+        </h1>
+        <p class="hero-subtitle" id="s1-sub">
+          Stream millions of high-fidelity tracks with authentic album artwork, zero interruptions, and instant playlist transfer.
+        </p>
+        <div class="eq-container" id="s1-eq">
+          <div class="eq-bar" style="height: 25px;"></div>
+          <div class="eq-bar" style="height: 45px;"></div>
+          <div class="eq-bar" style="height: 60px;"></div>
+          <div class="eq-bar" style="height: 35px;"></div>
+          <div class="eq-bar" style="height: 50px;"></div>
+          <div class="eq-bar" style="height: 20px;"></div>
+          <div class="eq-bar" style="height: 55px;"></div>
+          <div class="eq-bar" style="height: 40px;"></div>
+        </div>
+      </div>
+
+      <!-- ================= SCENE 2: QUICK PICKS & DISCOVERY (4.5s - 9.5s) ================= -->
+      <div id="scene2" class="scene">
+        <div class="act-header" id="s2-header">
+          <div class="act-tag">Smart Personalized Discovery</div>
+          <h2 class="act-heading">Instant Quick Picks & Charts</h2>
+        </div>
+        <div class="picks-grid" id="s2-grid">
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/m4_9Wy4547g/hqdefault.jpg" alt="Doja Cat" />
+            <div class="pick-info">
+              <h4>Paint The Town Red</h4>
+              <p>Doja Cat • 985M plays</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/ekr2nIex040/hqdefault.jpg" alt="APT." />
+            <div class="pick-info">
+              <h4>APT.</h4>
+              <p>ROSÉ & Bruno Mars • Trending #1</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/JGwWNGJdvx8/hqdefault.jpg" alt="Shape of You" />
+            <div class="pick-info">
+              <h4>Shape of You</h4>
+              <p>Ed Sheeran • 6.2B plays</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/4NRXx6U8ABQ/hqdefault.jpg" alt="Blinding Lights" />
+            <div class="pick-info">
+              <h4>Blinding Lights</h4>
+              <p>The Weeknd • 3.2B plays</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/sVty_SCAYZs/hqdefault.jpg" alt="Tame Impala" />
+            <div class="pick-info">
+              <h4>The Less I Know</h4>
+              <p>Tame Impala • Currents</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/bpOSxM0rNPM/hqdefault.jpg" alt="Arctic Monkeys" />
+            <div class="pick-info">
+              <h4>Do I Wanna Know?</h4>
+              <p>Arctic Monkeys • AM</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/B5YNiCfWC3A/hqdefault.jpg" alt="Kendrick Lamar" />
+            <div class="pick-info">
+              <h4>Swimming Pools</h4>
+              <p>Kendrick Lamar • Good Kid</p>
+            </div>
+          </div>
+          <div class="pick-card">
+            <img class="pick-art" src="https://i.ytimg.com/vi/m7Bc3pLyij0/hqdefault.jpg" alt="SZA" />
+            <div class="pick-info">
+              <h4>Snooze</h4>
+              <p>SZA • SOS</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCENE 3: NOW PLAYING FULL WINDOW (9.5s - 15.0s) ================= -->
+      <div id="scene3" class="scene">
+        <div class="act-header" id="s3-header">
+          <div class="act-tag">The YouTube Music Experience</div>
+          <h2 class="act-heading">Full-Screen Now Playing & Live Lyrics</h2>
+        </div>
+        <div class="now-playing-window" id="s3-window">
+          <!-- Left Stage -->
+          <div class="np-stage">
+            <div class="np-pill-switch" id="s3-switcher">
+              <div class="np-pill-btn active" id="s3-song-btn">Song</div>
+              <div class="np-pill-btn" id="s3-video-btn">Video</div>
+            </div>
+            <img class="np-cover" id="s3-cover" src="https://i.ytimg.com/vi/DCEVC_sr5Go/hqdefault.jpg" alt="Kali Uchis telepatía" />
+            <div style="margin-top: 24px; text-align: center;">
+              <h3 style="font-size: 26px; font-weight: 900; color: #fff;">telepatía</h3>
+              <p style="font-size: 16px; color: #a1a1aa; margin-top: 4px;">Kali Uchis • Sin Miedo (del Amor y Otros Demonios) ∞</p>
+            </div>
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="np-sidebar">
+            <div class="np-tabs">
+              <div class="np-tab">Up Next</div>
+              <div class="np-tab active">Lyrics</div>
+              <div class="np-tab">Related</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 10px;">
+              <p class="lyrics-line">Quién lo diría</p>
+              <p class="lyrics-line highlight" id="s3-lyric-active">Que se podría hacer el amor por telepatía</p>
+              <p class="lyrics-line">La luna está llena, mi cama vacía</p>
+              <p class="lyrics-line">Aunque tú estés lejos, te siento tan cerca</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCENE 4: 1-CLICK TRANSFER & CTA (15.0s - 20.0s) ================= -->
+      <div id="scene4" class="scene">
+        <div class="brand-badge" id="s4-badge">⚡ Zero Lock-in</div>
+        <h1 class="hero-title" id="s4-title" style="font-size: 76px; margin-bottom: 24px;">
+          Import Your Playlists in <span>1 Click</span>
+        </h1>
+
+        <div class="transfer-card" id="s4-transfer">
+          <div class="service-logo yt-logo">▶</div>
+          <div class="service-logo spotify-logo">●</div>
+          <div class="service-logo apple-logo">♫</div>
+          <div class="arrow-right">➔</div>
+          <div class="dhun-badge-final">Dhun Library</div>
+        </div>
+
+        <h2 style="font-size: 34px; font-weight: 800; color: #d4d4d8; text-align: center;">
+          Free forever. High fidelity. Built for you.
+        </h2>
+
+        <div class="cta-btn" id="s4-btn">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+          Experience Dhun
+        </div>
+      </div>
+    </div>
+
+    <!-- GSAP Master Animation Timeline -->
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Setup initial states
+      gsap.set(".scene", { autoAlpha: 0 });
+
+      // ================= SCENE 1 (0.0s - 4.5s) =================
+      tl.set("#scene1", { autoAlpha: 1 }, 0)
+        .fromTo("#s1-badge", { opacity: 0, y: -20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 0.2)
+        .fromTo("#s1-title", { opacity: 0, y: 40, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, 0.4)
+        .fromTo("#s1-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.7)
+        .fromTo(".eq-bar", 
+          { scaleY: 0.3, transformOrigin: "bottom" },
+          { scaleY: 1.4, duration: 0.4, repeat: 5, yoyo: true, stagger: 0.08, ease: "sine.inOut" }, 
+          0.8
+        )
+        // Transition Scene 1 out
+        .to("#scene1", { opacity: 0, scale: 0.96, filter: "blur(8px)", duration: 0.5, ease: "power2.in" }, 4.0)
+        .set("#scene1", { autoAlpha: 0 }, 4.5);
+
+      // ================= SCENE 2: QUICK PICKS (4.5s - 9.5s) =================
+      tl.set("#scene2", { autoAlpha: 1 }, 4.5)
+        .fromTo("#s2-header", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 4.6)
+        .fromTo(".pick-card", 
+          { opacity: 0, y: 30, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.06, ease: "back.out(1.4)" },
+          4.8
+        )
+        .to(".pick-card:nth-child(2)", { 
+          borderColor: "rgba(34, 197, 94, 0.8)", 
+          boxShadow: "0 0 30px rgba(34, 197, 94, 0.4)", 
+          scale: 1.04, 
+          duration: 0.6, 
+          ease: "power2.out" 
+        }, 6.5)
+        // Transition Scene 2 out
+        .to("#scene2", { opacity: 0, scale: 1.05, filter: "blur(8px)", duration: 0.5, ease: "power2.in" }, 9.0)
+        .set("#scene2", { autoAlpha: 0 }, 9.5);
+
+      // ================= SCENE 3: NOW PLAYING WINDOW (9.5s - 15.0s) =================
+      tl.set("#scene3", { autoAlpha: 1 }, 9.5)
+        .fromTo("#s3-header", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 9.6)
+        .fromTo("#s3-window", 
+          { opacity: 0, scale: 0.88, y: 60, filter: "blur(12px)" },
+          { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, 
+          9.8
+        )
+        .fromTo("#s3-lyric-active", 
+          { opacity: 0.3, scale: 0.95 },
+          { opacity: 1, scale: 1.05, duration: 0.6, ease: "power2.out" },
+          10.8
+        )
+        // Switch to video mode animation
+        .to("#s3-song-btn", { background: "transparent", color: "#888", duration: 0.3 }, 12.2)
+        .to("#s3-video-btn", { background: "#fff", color: "#000", duration: 0.3 }, 12.2)
+        .to("#s3-cover", { scale: 1.03, boxShadow: "0 0 60px rgba(34, 197, 94, 0.5)", duration: 0.4 }, 12.3)
+        // Transition Scene 3 out
+        .to("#scene3", { opacity: 0, scale: 0.92, filter: "blur(8px)", duration: 0.5, ease: "power2.in" }, 14.5)
+        .set("#scene3", { autoAlpha: 0 }, 15.0);
+
+      // ================= SCENE 4: CTA & 1-CLICK TRANSFER (15.0s - 20.0s) =================
+      tl.set("#scene4", { autoAlpha: 1 }, 15.0)
+        .fromTo("#s4-badge", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 15.1)
+        .fromTo("#s4-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 15.3)
+        .fromTo("#s4-transfer", 
+          { opacity: 0, scale: 0.85, y: 40 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "back.out(1.5)" },
+          15.6
+        )
+        .fromTo("#s4-btn", 
+          { opacity: 0, scale: 0.8, y: 30 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "elastic.out(1, 0.75)" },
+          16.3
+        )
+        .to("#s4-btn", { scale: 1.06, repeat: 2, yoyo: true, duration: 0.5, ease: "sine.inOut" }, 17.5);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
